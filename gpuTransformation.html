@@ -7,11 +7,46 @@
         body {
             margin: 0;
             overflow: hidden;
+            background-color: black;
+        }
+        .geo{
+            position: absolute;
+            background: transparent;
+            color: white;
+            left: 45%;
+        }
+        .move{
+            position: absolute;
+            color: white;
+            background: transparent;
+        }
+        .switch{
+            position: absolute;
+            top: 5%;
+            color: white;
+            background: transparent;
+        }
+        .re-rotation{
+            position: absolute;
+            top: 10%;
+            color: white;
+            background: transparent;
+        }
+        .scroll{
+            position: absolute;
+            top: 15%;
+            color: white;
+            background: transparent;
         }
     </style>
 </head>
 
 <body>
+    <h2 class="geo" id="geo">Geometry: Cube</h2>
+    <h2 class="move">w a s d to MOVE.</h2>
+    <h2 class="switch">E to switch geometry.</h2>
+    <h2 class="re-rotation">R to re-rotation of cube geomatry.</h2>
+    <h2 class="scroll">Scrolling mouse to MOVE geomatry backward or forward.</h2>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
 
@@ -46,11 +81,11 @@
         scene.add(ambient);
 
         // ✅ กล้อง
-        camera.position.set(0, 1, 5);
+        camera.position.set(0, 1, 10); //0 1 5
         camera.lookAt(0, 0, 0);
 
         // ✅ กล่อง
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const geometry = new THREE.BoxGeometry(1, 2, 1);
         const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
         const cube = new THREE.Mesh(geometry, material);
         cube.castShadow = true; // ✅ กล่องส่งเงา
@@ -75,9 +110,21 @@
         plane.position.y = -0.5;
         plane.receiveShadow = true; // ✅ พื้นรับเงา
         scene.add(plane);
-
-        window.addEventListener('keydown', function (event) {
-            switch (event.key) {
+        let rX = 0;
+        let sphereorcube = true; //true = กล่อง false = วงกลม
+        document.addEventListener('keydown', function (event) {
+            if(event.key === 'e'){
+                if(sphereorcube == true){
+                    sphereorcube = false;
+                    document.getElementById("geo").textContent = "Geometry: Sphere"
+                }
+                else if(sphereorcube == false){
+                    sphereorcube = true;
+                    document.getElementById("geo").textContent = "Geometry: Cube"
+                }
+            }
+            if(sphereorcube == true){
+                switch (event.key) {
                 case 'w':
                     cube.position.y += 0.2;
                     break;
@@ -90,12 +137,39 @@
                 case 'd':
                     cube.position.x += 0.2;
                     break;
+                case 'r':
+                    rX += 1;
+                    break;
+                }
+            }
+            else if(sphereorcube == false){
+                switch (event.key) {
+                case 'w':
+                    sphere.position.y += 0.2;
+                    break;
+                case 's':
+                    sphere.position.y -= 0.2;
+                    break;
+                case 'a':
+                    sphere.position.x -= 0.2;
+                    break;
+                case 'd':
+                    sphere.position.x += 0.2;
+                    break;
+                }
             }
         })
-
+        document.addEventListener('wheel',function (event){
+            if(sphereorcube == true){
+                cube.position.z += event.deltaY * 0.001;
+            }
+            else if(sphereorcube == false){
+                sphere.position.z += event.deltaY * 0.001;
+            }
+        })
         // ✅ render loop
         function animate(t) {
-            cube.rotation.x = t * 0.001;
+            cube.rotation.x = rX;
             cube.rotation.y = t * 0.001;
 
             sphere.rotation.y = t * 0.001;
