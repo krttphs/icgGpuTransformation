@@ -12,6 +12,14 @@
 </head>
 
 <body>
+    <h1 style="position: absolute; background-color: black; background: transparent; display: flex; color: white; justify-content: center; align-items: center; width: 100%; margin: 0%;"
+        id="geometryName">Geometry: Cube</h1>
+    <div style="position: absolute; background-color: black; display: flex; flex-direction: column; color: white; justify-content: start; align-items: start; margin: 0%; padding: 10px;">
+        <h2>W A S D To MOVE</h2>
+        <h2>E to swap Geometry</h2>
+        <h2>Scroll mouse to move Forward-Backward</h2>
+    </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
 
@@ -24,7 +32,7 @@
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
-            60,
+            45,
             window.innerWidth / window.innerHeight,
             0.1,
             1000
@@ -46,11 +54,11 @@
         scene.add(ambient);
 
         // ✅ กล้อง
-        camera.position.set(0, 1, 5);
+        camera.position.set(0, 1, 10);
         camera.lookAt(0, 0, 0);
 
         // ✅ กล่อง
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const geometry = new THREE.BoxGeometry(2, 1, 1);
         const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
         const cube = new THREE.Mesh(geometry, material);
         cube.castShadow = true; // ✅ กล่องส่งเงา
@@ -76,28 +84,99 @@
         plane.receiveShadow = true; // ✅ พื้นรับเงา
         scene.add(plane);
 
-        window.addEventListener('keydown', function (event) {
+        let shape = true;
+
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'e') {
+                if (shape == true){
+                    shape = false;
+                    camera.position.set(sphere.position.x, sphere.position.y, 10);
+                }
+                else{
+                    shape = true;
+                    camera.position.set(cube.position.x, cube.position.y, 10);
+                }
+                geometryName();
+            }
             switch (event.key) {
                 case 'w':
-                    cube.position.y += 0.2;
-                    break;
-                case 's':
-                    cube.position.y -= 0.2;
+                    if (shape) {
+                        cube.position.y += 0.1;
+                        camera.position.set(cube.position.x, cube.position.y, 10);
+                    }
+                    else {
+                        sphere.position.y += 0.2;
+                        camera.position.set(sphere.position.x, sphere.position.y, 10);
+                    }
                     break;
                 case 'a':
-                    cube.position.x -= 0.2;
+                    if (shape) {
+                        cube.position.x -= 0.2;
+                        camera.position.set(cube.position.x, cube.position.y, 10);
+                    }
+                    else {
+                        sphere.position.x -= 0.2;
+                        camera.position.set(sphere.position.x, sphere.position.y, 10);
+                    }
+                    break;
+                case 's':
+                    if (shape) {
+                        if (cube.position.y - 0.2 < 0) {
+                            camera.position.set(cube.position.x, cube.position.y, 10);
+                            break;
+                        }
+                        else {
+                            cube.position.y -= 0.2;
+                            camera.position.set(cube.position.x, cube.position.y, 10);
+                        }
+                    }
+                    else {
+                        if (sphere.position.y - 0.2 < 0) {
+                            camera.position.set(sphere.position.x, sphere.position.y, 10);
+                            break;
+                        }
+                        else {
+                            sphere.position.y -= 0.2;
+                            camera.position.set(sphere.position.x, sphere.position.y, 10);
+                        }
+
+                    }
                     break;
                 case 'd':
-                    cube.position.x += 0.2;
+                    if (shape) {
+                        cube.position.x += 0.2;
+                        camera.position.set(cube.position.x, cube.position.y, 10);
+                    }
+                    else {
+                        sphere.position.x += 0.2;
+                        camera.position.set(sphere.position.x, sphere.position.y, 10);
+                    }
                     break;
+            }
+        });
+
+        document.addEventListener("wheel", event => {
+            if (shape) {
+                cube.position.z += event.deltaY * 0.001;
+            }
+            else {
+                sphere.position.z += event.deltaY * 0.001;
             }
         })
 
+        function geometryName() {
+            if (shape) {
+                const name = document.getElementById("geometryName").textContent = "Geometry: Cube";
+            }
+            else {
+                const name = document.getElementById("geometryName").textContent = "Geometry: Sphere";
+            }
+        }
+
         // ✅ render loop
         function animate(t) {
-            cube.rotation.x = t * 0.001;
+            //cube.rotation.x = t * 0.001;
             cube.rotation.y = t * 0.001;
-
             sphere.rotation.y = t * 0.001;
 
             renderer.render(scene, camera);
