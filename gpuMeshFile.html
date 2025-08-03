@@ -15,7 +15,8 @@
     <!-- core three.js -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <script>
 
         const renderer = new THREE.WebGLRenderer();
@@ -36,7 +37,8 @@
         );
         camera.position.set(0, 2, 10);
         camera.lookAt(0, 0, 0);
-
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        
         // ✅ Directional Light ที่สร้างเงา
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(5, 10, 5);
@@ -67,7 +69,7 @@
 
         // ✅ โหลดโมเดล OBJ
         const loader = new THREE.OBJLoader();
-        loader.load('model1.obj', function (object) {
+        loader.load('https://github.com/krttphs/icgGpuTransformation/model1.obj', function (object) {
             // ตั้งค่า castShadow กับทุก mesh ใน object
             object.traverse(function (child) {
                 if (child.isMesh) {
