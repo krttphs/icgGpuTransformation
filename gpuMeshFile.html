@@ -81,7 +81,7 @@
             console.error('Error loading OBJ:', error);
         });
 
-        loader.load('chair.obj', function (object) {
+        loader.load('https://krttphs.github.io/icgGpuTransformation/chair.obj', function (object) {
             // ตั้งค่า castShadow กับทุก mesh ใน object
             object.traverse(function (child) {
                 if (child.isMesh) {
